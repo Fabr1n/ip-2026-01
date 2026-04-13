@@ -5,29 +5,27 @@ import "fmt"
 func main() {
 	var n int
 
-	fmt.Print("Digite a quantidade de termos: ")
-	fmt.Scanln(&n)
+	fmt.Print("Digite o número de termos (N): ")
+	_, err := fmt.Scan(&n)
 
-	if n <= 0 {
-		fmt.Println("Erro: N deve ser maior que 0!")
+	if err != nil || n <= 0 {
+		fmt.Println("Valor inválido! Por favor, insira um número inteiro maior que zero.")
 		return
 	}
 
 	soma := 0.0
+	numerador := 1000.0
+	denominador := 1.0
+	sinal := 1.0
 
 	for i := 1; i <= n; i++ {
-		var termo float64
-
-		if i%2 == 1 {
-			numerador := 1000.0 - float64((i-1)*3)
-			termo = numerador / float64(i)
-		} else {
-			numerador := 1000.0 - float64((i-1)*3)
-			termo = -(numerador * numerador) / float64(i)
-		}
-
+		termo := sinal * (numerador / denominador)
 		soma += termo
+
+		numerador -= 3.0
+		denominador += 1.0
+		sinal *= -1.0
 	}
 
-	fmt.Printf("Soma = %.6f\n", soma)
+	fmt.Printf("O resultado da série considerando os %d primeiros termos é: %.4f\n", n, soma)
 }
