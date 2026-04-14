@@ -6,8 +6,17 @@ import (
 )
 
 func main() {
-	for a := 0.0; a <= 6.3; a += 0.1 {
-		senA := a - (math.Pow(a, 3))/6 + (math.Pow(a, 5))/120 - (math.Pow(a, 7))/5040
-		fmt.Printf("Ângulo: %.1f rad, Sen(A) = %.6f\n", a, senA)
+	fmt.Println("Ângulo A (rad) | Seno(A) Aproximado")
+	fmt.Println("-----------------------------------")
+
+	for i := 0; i <= 63; i++ {
+		A := float64(i) / 10.0
+		termo1 := A
+		termo2 := math.Pow(A, 3) / 6.0
+		termo3 := math.Pow(A, 5) / 120.0
+		termo4 := math.Pow(A, 7) / 5040.0
+
+		senA := termo1 - termo2 + termo3 - termo4
+		fmt.Printf("%14.1f | %18.6f\n", A, senA)
 	}
 }
