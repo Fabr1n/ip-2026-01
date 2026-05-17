@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar pacientes</title>
+</head>
+<body>
+    <h1>Pacientes</h1>
+
+    <a href="/createPatient">Cadastrar paciente</a>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Idade</th>
+                <th>Telefone</th>
+                <th>Sintomas</th>
+                <th>Diagnóstico</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .}}
+            <tr>
+                <td>{{.ID}}</td>
+                <td>{{.Nome}}</td>
+                <td>{{.CPF}}</td>
+                <td>{{.Idade}}</td>
+                <td>{{.Telefone}}</td>
+                <td>{{.Sintomas}}</td>
+                <td>{{.Diagnostico}}</td>
+                <td>
+                    <a href="/updatePatient?id={{.ID}}">Editar</a>
+                    <a href="/deletePatient?id={{.ID}}">Excluir</a>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+
+    <a href="/">Voltar</a>
+</body>
+</html>
