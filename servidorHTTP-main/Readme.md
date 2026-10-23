@@ -1,137 +1,82 @@
-# Servidor HTTP com GO
+# Servidor HTTP em Go · Cadastro de pacientes
 
-## Visão Geral
-Este projeto é um servidor HTTP desenvolvido em GoLang que permite a criação, autenticação, atualização e exclusão de contas de usuários. Ele utiliza PostgreSQL como banco de dados e fornece uma interface web simples para interação com os usuários.
+Projeto acadêmico com operações de criação, consulta, atualização e exclusão de pacientes, usando Go, PostgreSQL e páginas HTML.
 
----
+## Implementação atual
 
-## Estrutura do Projeto
-### Diretórios Principais:
-- **`app/`**: Contém a lógica do servidor, incluindo handlers e utilitários.
-  - **`handlers/`**: Lida com as requisições HTTP e processa os dados.
-  - **`utils/`**: Contém funções auxiliares, como conexão ao banco de dados e manipulação de dados.
-- **`static/`**: Contém os arquivos estáticos (HTML e CSS) que compõem o front-end da aplicação.
-  - **`forms/`**: Formulários HTML para criar, atualizar, excluir contas e fazer login.
-  - **`styles/`**: Arquivos CSS para estilização das páginas.
+| Parte | Arquivo |
+| :--- | :--- |
+| Inicialização e rotas | [app/main.go](./app/main.go) |
+| Handlers de pacientes | [app/handlers/patientHandler.go](./app/handlers/patientHandler.go) |
+| Conexão e criação do banco/tabela | [app/utils/connectToDB.go](./app/utils/connectToDB.go) |
+| Interface usada pelo servidor | [app/static](./app/static/) |
 
----
+A implementação atual usa a tabela `patients`. Os arquivos legados de contas em `static/` não correspondem às rotas registradas no `app/main.go` atual.
 
-## Configuração do Ambiente
+## Pré-requisitos
 
-### Pré-requisitos
-1. **GoLang**: Certifique-se de que o Go está instalado na sua máquina.
-2. **PostgreSQL**: Banco de dados utilizado pelo projeto.
-3. **Docker** (opcional): Para facilitar a configuração do banco de dados.
+- Go compatível com a versão declarada em [go.mod](./go.mod), atualmente 1.24.1.
+- PostgreSQL em execução.
+- Usuário do banco com permissão para criar o banco de dados, como exigido por `ensureDatabase`.
 
-### Passos para Configuração
-1. **Clone o repositório**:
-   ```bash
-   git clone <URL_DO_REPOSITORIO>
-   cd servidorHTTP
-   ```
+## Configuração
 
-2. **Configure o arquivo `.env`**:
-   Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
-   ```
-   DB_USER=<seu_usuario>
-   DB_PASSWORD=<sua_senha>
-   DB_NAME=<nome_do_banco>
-   DB_HOST=<host_do_banco>
-   DB_PORT=<porta_do_banco>
-   ```
+Clone e entre no módulo:
 
-3. **Configuração do Banco de Dados**:
-   - Se estiver usando Docker, utilize o arquivo `docker-compose.yml` para subir o banco de dados:
-     ```bash
-     docker compose up
-     ```
-   - Crie a tabela de usuários no banco de dados com o seguinte comando SQL:
-     ```sql
-     CREATE TABLE users (
-         id SERIAL PRIMARY KEY,
-         username VARCHAR(100) NOT NULL,
-         email VARCHAR(150) NOT NULL UNIQUE,
-         born_date DATE NOT NULL,
-         password VARCHAR(255) NOT NULL,
-         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-     );
-     ```
-
-4. **Instale as dependências**:
-   Execute o comando abaixo para instalar as dependências do projeto:
-   ```bash
-   go mod tidy
-   ```
-
----
-
-## Executando o Projeto
-1. **Inicie o servidor**:
-   ```bash
-   go run app/main.go
-   ```
-
-2. **Acesse a aplicação**:
-   O servidor estará disponível no endereço exibido no terminal, geralmente algo como:
-   ```
-   http://127.0.0.1:3000/
-   ```
-
----
-
-## Funcionalidades
-### Rotas Principais:
-- **`/`**: Página inicial com links para os formulários.
-- **`/forms/createAccount.html`**: Formulário para criar uma nova conta.
-- **`/forms/login.html`**: Formulário para login.
-- **`/forms/updateAccount.html`**: Formulário para atualizar os dados da conta.
-- **`/forms/deleteAccount.html`**: Formulário para excluir uma conta.
-
-### Handlers:
-- **`FormHandler`**: Processa a criação de contas.
-- **`LoginHandler`**: Valida as credenciais e exibe o perfil do usuário.
-- **`UpdateAccountHandler`**: Atualiza os dados do usuário no banco de dados.
-- **`DeleteAccountHandler`**: Remove a conta do usuário.
-
----
-
-## Estrutura de Pastas
-```
-.env
-docker-compose.yml
-go.mod
-app/
-  main.go
-  handlers/
-    formHandler.go
-    loginHandler.go
-    updateAccountHandler.go
-    deleteAccountHandler.go
-  utils/
-    connectToDB.go
-    encrypt.go
-    validateUser.go
-    updateUser.go
-    deleteUser.go
-    getUserByEmail.go
-static/
-  index.html
-  forms/
-    createAccount.html
-    login.html
-    updateAccount.html
-    deleteAccount.html
-  styles/
-    index.style.css
-    createAccount.style.css
-    login.style.css
-    updateAccount.style.css
-    deleteAccount.style.css
+```bash
+git clone https://github.com/Fabr1n/ip-2026-01.git
+cd ip-2026-01/servidorHTTP-main
+go mod download
 ```
 
+Configure as variáveis no ambiente do processo:
+
+| Variável | Finalidade |
+| :--- | :--- |
+| `DB_HOST` | Host do PostgreSQL |
+| `DB_PORT` | Porta do PostgreSQL |
+| `DB_USER` | Usuário do banco |
+| `DB_PASSWORD` | Senha do banco |
+| `DB_NAME` | Nome do banco da aplicação |
+
+O arquivo [.env.example](./.env.example) lista as variáveis. O código usa `os.Getenv`; ele **não carrega um arquivo `.env` automaticamente**.
+
+Exemplo de configuração em PowerShell:
+
+```powershell
+$env:DB_HOST = "localhost"
+$env:DB_PORT = "5432"
+$env:DB_USER = "postgres"
+$env:DB_PASSWORD = "<sua senha local>"
+$env:DB_NAME = "servidorhttp"
+go run ./app/main.go
+```
+
+A conexão inicial cria o banco quando necessário e executa `CREATE TABLE IF NOT EXISTS patients`.
+
+## Execução
+
+Na pasta `servidorHTTP-main`, execute:
+
+```bash
+go run ./app/main.go
+```
+
+Acesse **http://localhost:8080/**. O terminal também mostra o endereço da interface de rede local.
+
+## Rotas registradas
+
+| Rota | Operação |
+| :--- | :--- |
+| `/` | Página inicial |
+| `/createPatient` | Formulário e criação de paciente |
+| `/patients` | Listagem |
+| `/updatePatient?id=...` | Edição |
+| `/deletePatient?id=...` | Exclusão |
+| `/static/` | Arquivos em `app/static/` |
+
+Use dados fictícios nos exercícios e nas demonstrações. Este README descreve os arquivos e as rotas atuais; não representa validação de produção.
+
 ---
 
-## Observações
-- Certifique-se de que o banco de dados está configurado corretamente antes de iniciar o servidor.
-- O projeto utiliza o driver `github.com/lib/pq` para conexão com o PostgreSQL.
-- Para mais informações, consulte os comentários no código ou entre em contato com o desenvolvedor.
+[Voltar ao repositório acadêmico](../README.md) · [Perfil do autor](https://github.com/Fabr1n)
